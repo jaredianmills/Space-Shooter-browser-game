@@ -4,6 +4,7 @@ const mainPlayArea = document.getElementById("main-play-area")
 const shooter = document.getElementById("player-controlled-shooter")
 const monsterImgs = ['images/monster-1.png', 'images/monster-2.png', 'images/monster-3.png']
 const scoreCounter = document.querySelector('#score span')
+
 let justice
 let monsterInterval
 
@@ -12,21 +13,20 @@ startButton.addEventListener("click", (event) => {
   playGame()
 })
 
+
 function letShipFly(event) {
-    if (event.key === "ArrowUp") {
-      event.preventDefault()
-      moveUp()
-      // event.stopPropagation()
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault()
-      moveDown()
-      // event.stopPropagation()
-    } else if (event.key === " ") {
-      event.preventDefault()
-      fireLaser()
-      // event.stopPropagation()
-    }
+  if (event.key === "ArrowUp") {
+    event.preventDefault()
+    moveUp()
+  } else if (event.key === "ArrowDown") {
+    event.preventDefault()
+    moveDown()
+  } else if (event.key === " ") {
+    event.preventDefault()
+    fireLaser()
+  }
 }
+
 
 function moveUp() {
   let topPosition = window.getComputedStyle(shooter).getPropertyValue('top')
@@ -38,6 +38,7 @@ function moveUp() {
     shooter.style.top = `${position}px`
   }
 }
+
 
 function moveDown() {
   let topPosition = window.getComputedStyle(shooter).getPropertyValue('top')
@@ -56,9 +57,7 @@ function fireLaser() {
   mainPlayArea.appendChild(laser)
   let laserSFX = new Audio('audio/laser-sfx.m4a')
   laserSFX.play()
-  let firedLasers = document.getElementsByClassName('laser')
-  let newestLaser = firedLasers[firedLasers.length - 1]
-  moveLaser(newestLaser)
+  moveLaser(laser)
 }
 
 
@@ -68,16 +67,15 @@ function createLaserElement() {
   let newLaser = document.createElement('img')
   newLaser.src = 'images/laser.png'
   newLaser.classList.add('laser')
-  // laser.innerHTML = class='laser'
   newLaser.style.left = `${xPosition}px`
   newLaser.style.top = `${yPosition - 10}px`
   return newLaser
 }
 
+
 function moveLaser(laser) {
   let laserInterval = setInterval(() => {
     let xPosition = parseInt(laser.style.left)
-
     let monsters = document.querySelectorAll(".monster")
     monsters.forEach(monster => {
       if (checkLaserCollision(laser, monster)) {
@@ -89,15 +87,14 @@ function moveLaser(laser) {
         scoreCounter.innerText = parseInt(scoreCounter.innerText) + 100
       }
     })
-
     if (xPosition === 340) {
-      laser.style.display = 'none'
       laser.remove()
     } else {
       laser.style.left = `${xPosition + 4}px`
     }
   }, 10)
 }
+
 
 function createMonster() {
   let newMonster = document.createElement('img')
@@ -110,6 +107,7 @@ function createMonster() {
   mainPlayArea.appendChild(newMonster)
   moveMonster(newMonster)
 }
+
 
 function moveMonster(monster) {
   let moveMonsterInterval = setInterval(() => {
@@ -127,8 +125,6 @@ function moveMonster(monster) {
 }
 
 
-
-
 function checkLaserCollision(laser, monster) {
   let laserLeft = parseInt(laser.style.left)
   let laserTop = parseInt(laser.style.top)
@@ -137,13 +133,13 @@ function checkLaserCollision(laser, monster) {
   let monsterBottom = monsterTop - 30
   let monsterLeft = parseInt(monster.style.left)
   if (laserLeft != 340 && laserLeft + 40 >= monsterLeft) {
-    // if ((laserBottom < monsterTop && laserTop > monsterBottom) || (laserTop <= monsterBottom && laserBottom >= monsterTop) || (laserBottom <= monsterTop && laserBottom > monsterBottom)) {
-    //   return true
-    // }
-
     if ( (laserTop <= monsterTop && laserTop >= monsterBottom) ) {
       return true
+    } else {
+      return false
     }
+  } else {
+    return false
   }
 }
 
@@ -167,67 +163,11 @@ function gameOver() {
   }, 1100)
 }
 
-
-
-
-
-
 function playGame() {
   startButton.style.display = 'none'
   instructions.style.display = 'none'
   window.addEventListener("keydown", letShipFly)
-  // letShipFly()
   justice = new Audio("audio/Justice-One-Minute-To-Midnight.m4a")
   justice.play()
-  // setTimeout(() => {createMonster()}, 500)
   monsterInterval = setInterval(() => { createMonster() }, 2100)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function moveLeft() {
-//   let leftPosition = window.getComputedStyle(shooter).getPropertyValue('left')
-//   if (leftPosition === "0px") {
-//     return
-//   } else {
-//     let position = parseInt(leftPosition)
-//     position -= 4
-//     shooter.style.left = `${position}px`
-//   }
-// }
-//
-// function moveRight() {
-//   let leftPosition = window.getComputedStyle(shooter).getPropertyValue('left')
-//   if (leftPosition === "360px") {
-//     return
-//   } else {
-//     let position = parseInt(leftPosition)
-//     position += 4
-//     shooter.style.left = `${position}px`
-//   }
-// }
